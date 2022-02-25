@@ -58,7 +58,7 @@ if __name__ == "__main__":
     create_dir_if_not_exists(f"./cache/{country}")
 
     url = f"http://www.insecam.org/en/bycountry/{country}/?page="
-    ips_file = f"./{country}/ips.json"
+    ips_file = f"./cache/{country}/ips.json"
 
     links = list(set(main(url,range(1,20), header_values={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'})))
     links = [l for l in links if l is not None]
@@ -67,12 +67,12 @@ if __name__ == "__main__":
 
     locs = get_locations(ips_file)
 
-    locs_file = f"./{country}/locs.json"
+    locs_file = f"./cache/{country}/locs.json"
     save_to_json(locs_file, locs)
     locs = load_content(locs_file)
 
 
     df = pd.DataFrame.from_dict({"id": [x["query"] for x in locs], "lat": [x["lat"] for x in locs], "lon": [x["lon"] for x in locs]})
     fig = px.scatter_geo(df,lat='lat',lon='lon', hover_name="id", scope="europe", center={"lat": 50.7385,"lon": 25.3198})
-    fig.update_layout(title = 'World map', title_x=0.5)
+    fig.update_layout(title = f'Webcams in {country}', title_x=0.5)
     fig.show()
